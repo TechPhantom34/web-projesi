@@ -1,7 +1,3 @@
-<?php
-// Kullanıcının IP adresini al
-$user_ip = $_SERVER['REMOTE_ADDR'];
-?>
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -32,9 +28,23 @@ $user_ip = $_SERVER['REMOTE_ADDR'];
 
     <script>
         window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            'userIpAddress': '<?php echo $user_ip; ?>'
-        });
+        
+        async function getAndPushIp() {
+            try {
+                // Netlify Function'ınıza istek gönderir
+                const response = await fetch('/.netlify/functions/get-ip');
+                const data = await response.json();
+                
+                // IP adresini dataLayer'a ekler
+                window.dataLayer.push({
+                    'userIpAddress': data.ipAddress
+                });
+            } catch (error) {
+                console.error('IP adresi alınamadı:', error);
+            }
+        }
+        
+        getAndPushIp();
     </script>
     
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
