@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çerez Kaydetme ve Okuma</title>
+
+    <style>
+        /* CSS kodları buraya */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .input-section, .output-section {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #sonucAlani {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #007bff;
+            font-weight: bold;
+            min-height: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Çerezlerle Çalışma Projesi</h1>
+
+        <div class="input-section">
+            <label for="metinAlani">Metninizi buraya yazın:</label>
+            <textarea id="metinAlani" rows="4" cols="50"></textarea>
+            <button id="kaydetBtn">Çereze Kaydet</button>
+        </div>
+
+        <div class="output-section">
+            <button id="okuBtn">Yazıyı Oku</button>
+            <p id="sonucAlani"></p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript kodları buraya
+        const metinAlani = document.getElementById('metinAlani');
+        const kaydetBtn = document.getElementById('kaydetBtn');
+        const okuBtn = document.getElementById('okuBtn');
+        const sonucAlani = document.getElementById('sonucAlani');
+
+        kaydetBtn.addEventListener('click', () => {
+            const metin = metinAlani.value;
+            const birGunSonra = new Date();
+            birGunSonra.setDate(birGunSonra.getDate() + 1);
+            document.cookie = `metin=${encodeURIComponent(metin)}; expires=${birGunSonra.toUTCString()}; path=/`;
+
+            alert('Yazı çereze kaydedildi!');
+        });
+
+        okuBtn.addEventListener('click', () => {
+            const tumCerezler = document.cookie;
+            if (!tumCerezler) {
+                sonucAlani.textContent = 'Henüz çerezde kayıtlı bir yazı yok.';
+                return;
+            }
+
+            const cerezlerDizisi = tumCerezler.split(';');
+            let kaydedilenMetin = '';
+
+            cerezlerDizisi.forEach(cerez => {
+                const trimmedCerez = cerez.trim();
+                if (trimmedCerez.startsWith('metin=')) {
+                    kaydedilenMetin = trimmedCerez.substring(6);
+                    kaydedilenMetin = decodeURIComponent(kaydedilenMetin);
+                }
+            });
+
+            if (kaydedilenMetin) {
+                sonucAlani.textContent = `Çerezden okunan yazı: ${kaydedilenMetin}`;
+            } else {
+                sonucAlani.textContent = 'Henüz çerezde kayıtlı bir yazı yok.';
+            }
+        });
+    </script>
+
+</body>
+</html>
